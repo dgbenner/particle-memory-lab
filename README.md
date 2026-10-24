@@ -45,8 +45,8 @@ The list on the left and the Recipes buttons in the panel are the same six recip
 
 | Recipe | Mood | Shape |
 |---|---|---|
-| Solar (default) | warm, restless | Ring |
-| Blue Ice | cold, still | Cube lattice |
+| Sunburn (default) | warm, restless | Ring |
+| Blue Icicle | cold, still | Cube lattice |
 | Night Courtyard | quiet, nocturnal | Torus knot |
 | Aurora | dreamy, slow | Spiral galaxy |
 | Signal | nervous, alert | Lorenz attractor |
@@ -54,7 +54,7 @@ The list on the left and the Recipes buttons in the panel are the same six recip
 
 Recipes live in `src/settings/presets.js`. Each lists only the settings it changes; everything else takes the schema default. Add `mood` (two words) and a `description`; the tag line and sheet are generated from them.
 
-**Settle** (Forces) calms the wiggle once particles arrive at a shape, so it comes into focus. Blue Ice, Night Courtyard and Aurora use it.
+**Settle** (Forces) calms the wiggle once particles arrive at a shape, so it comes into focus. Blue Icicle, Night Courtyard and Aurora use it.
 
 ## Notes beyond the spec
 

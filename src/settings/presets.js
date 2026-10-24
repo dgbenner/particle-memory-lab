@@ -7,13 +7,13 @@ import { SCHEMA } from './schema.js';
 export const NON_VISUAL = ['preset', 'count', 'pixelRatio', 'autoQuality', 'orbitMode', 'textString', 'city'];
 
 // Older saved settings used these ids.
-const ALIASES = { 'ember-rings': 'solar', painting: 'paint', swarm: 'signal' };
+const ALIASES = { 'ember-rings': 'sunburn', solar: 'sunburn', blueice: 'blueicicle', painting: 'paint', swarm: 'signal' };
 export const canonical = (id) => ALIASES[id] || id;
 
 export const PRESETS = [
   {
-    id: 'solar',
-    name: 'Solar',
+    id: 'sunburn',
+    name: 'Sunburn',
     mood: ['WARM', 'RESTLESS'],
     description: 'Dan’s tuned look: tiny sparkling rings rising off a ring of fire, long trails, a wide soft cursor.',
     values: {
@@ -29,8 +29,8 @@ export const PRESETS = [
     },
   },
   {
-    id: 'blueice',
-    name: 'Blue Ice',
+    id: 'blueicicle',
+    name: 'Blue Icicle',
     mood: ['COLD', 'STILL'],
     description: 'A frozen lattice breathing out long, slow vapor trails, like dry-ice smoke.',
     values: {

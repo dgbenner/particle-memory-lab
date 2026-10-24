@@ -10,7 +10,7 @@ export const SECTIONS = [
 export const COUNTS = { low: 128, medium: 256, high: 512, ultra: 1024 };
 
 export const SCHEMA = [
-  { key: 'preset', section: 'Recipes', type: 'hidden', default: 'solar' },
+  { key: 'preset', section: 'Recipes', type: 'hidden', default: 'sunburn' },
 
   // Particles
   { key: 'count', label: 'Count', section: 'Particles', type: 'select', default: 'ultra', rebuild: true,
@@ -127,7 +127,7 @@ export const SCHEMA = [
   { key: 'decodeMs', label: 'Decode duration', section: 'HUD', type: 'range', min: 300, max: 1500, step: 10, default: 700, unit: ' ms' },
   { key: 'decodeGlyphs', label: 'Decode glyphs', section: 'HUD', type: 'select', default: 'code',
     options: [['code', 'A–Z 0–9 / \\ < > _ |'], ['blocks', 'Blocks only'], ['binary', '0 and 1']] },
-  { key: 'city', label: 'Clock city', section: 'HUD', type: 'text', default: 'ST. PAUL', maxLength: 24 },
+  { key: 'city', label: 'Clock city', section: 'HUD', type: 'text', default: 'SAINT PAUL, MN, USA', maxLength: 28 },
 
   // Performance
   { key: 'pixelRatio', label: 'Pixel ratio cap', section: 'Performance', type: 'select', default: '2',

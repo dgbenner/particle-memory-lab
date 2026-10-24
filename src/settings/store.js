@@ -3,7 +3,7 @@
 import { SCHEMA, BY_KEY } from './schema.js';
 
 // Recipe ids that were renamed (kept in step with ALIASES in presets.js).
-const RENAMED = { 'ember-rings': 'solar', painting: 'paint', swarm: 'signal' };
+const RENAMED = { 'ember-rings': 'sunburn', solar: 'sunburn', blueice: 'blueicicle', painting: 'paint', swarm: 'signal' };
 
 const KEY = 'particle-memory-lab:v1';
 
