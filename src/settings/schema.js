@@ -61,7 +61,7 @@ export const SCHEMA = [
   { key: 'textDepth', label: 'Text depth', section: 'Shape & Morph', type: 'range', min: 0, max: 0.5, step: 0.01, default: 0.12,
     hint: 'Jitter in depth, so text reads as a slab.' },
   { key: 'imageFile', label: 'Image', section: 'Shape & Morph', type: 'file', accept: 'image/*',
-    hint: 'Uploading switches the shape source to Image. The sample is a generated abstract.' },
+    hint: 'Uploading switches the shape to Image. Until then, Image uses Dan\u2019s painting.' },
   { key: 'imageWeight', label: 'Brightness weight', section: 'Shape & Morph', type: 'range', min: 0, max: 3, step: 0.05, default: 1,
     hint: '0 samples evenly; higher crowds particles into bright areas.' },
   { key: 'imageDepth', label: 'Depth from brightness', section: 'Shape & Morph', type: 'range', min: 0, max: 1, step: 0.01, default: 0.25 },

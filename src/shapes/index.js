@@ -10,11 +10,25 @@ import { loadModel, sampleModel } from './model.js';
 import { normalize, order } from './process.js';
 
 const cache = new Map();
-let imagePx = null, imageId = 'sample';
+let imagePx = null, imageId = 'default';
 let model = null, modelId = '';
 const modelLoads = new Map();
 
 export function setImage(img, id) { imagePx = readPixels(img); imageId = id; }
+
+// Paint's image ships in public/img. If it can't load, fall back to the generated sample.
+let defaultImage = null;
+function loadDefaultImage() {
+  if (!defaultImage) {
+    defaultImage = new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(readPixels(img));
+      img.onerror = () => resolve(readPixels(sampleImage()));
+      img.src = `${import.meta.env.BASE_URL}img/paint.jpg`;
+    });
+  }
+  return defaultImage;
+}
 export function setModel(m, id) { model = m; modelId = id; }
 export const hasModel = () => !!model;
 export const currentImageId = () => imageId;
@@ -65,7 +79,7 @@ async function build(spec, n) {
     case 'text': return { points: text(spec.text, n, { depth: S.textDepth }), colors: null };
     case 'image':
     case 'imageGrid': {
-      if (!imagePx) imagePx = readPixels(sampleImage());
+      if (!imagePx) imagePx = await loadDefaultImage();
       return spec.type === 'image' ? image(imagePx, n, { weight: S.imageWeight, depth: S.imageDepth }) : imageGrid(imagePx, n);
     }
     case 'model': {
