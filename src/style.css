@@ -18,12 +18,6 @@ body { font-family: var(--mono); }
 
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-.mark {
-  position: fixed; left: 20px; bottom: 18px; z-index: 5; pointer-events: none;
-  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
-}
-.mark b { color: var(--fg); font-weight: 400; }
-
 .panel-show {
   position: fixed; top: 14px; right: 14px; z-index: 10;
   font: inherit; font-size: 11px; letter-spacing: 0.08em; color: var(--fg); cursor: pointer;

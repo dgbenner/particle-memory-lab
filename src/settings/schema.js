@@ -1,18 +1,19 @@
 // Every setting the lab exposes. The panel, presets, saving and copy/paste all read this list.
-// type: range | select | toggle | color | hidden
+// type: range | select | toggle | color | text | file | hidden  (file inputs aren't saved)
 // safeMin/safeMax bound Randomize (phase 5). rebuild: true means the simulation must be rebuilt.
 
 export const SECTIONS = [
-  'Style', 'Particles', 'Forces', 'Cursor', 'Color', 'Glow & Post', 'Camera', 'Background', 'Performance', 'Settings',
+  'Style', 'Particles', 'Forces', 'Cursor', 'Shape & Morph', 'Color', 'Glow & Post', 'Camera', 'Background', 'HUD',
+  'Performance', 'Settings',
 ];
 
 export const COUNTS = { low: 128, medium: 256, high: 512, ultra: 1024 };
 
 export const SCHEMA = [
-  { key: 'preset', section: 'Style', type: 'hidden', default: 'courtyard' },
+  { key: 'preset', section: 'Style', type: 'hidden', default: 'ember-rings' },
 
   // Particles
-  { key: 'count', label: 'Count', section: 'Particles', type: 'select', default: 'medium', rebuild: true,
+  { key: 'count', label: 'Count', section: 'Particles', type: 'select', default: 'ultra', rebuild: true,
     options: [['low', 'Low · 16k'], ['medium', 'Medium · 65k'], ['high', 'High · 262k'], ['ultra', 'Ultra · 1M (desktop)']] },
   { key: 'size', label: 'Size', section: 'Particles', type: 'range', min: 0.5, max: 8, step: 0.1, default: 2, unit: 'px', safeMin: 1, safeMax: 4 },
   { key: 'sizeVar', label: 'Size variation', section: 'Particles', type: 'range', min: 0, max: 1, step: 0.01, default: 0.5 },
@@ -42,9 +43,41 @@ export const SCHEMA = [
   { key: 'cursorEase', label: 'Follow', section: 'Cursor', type: 'range', min: 1, max: 30, step: 0.5, default: 10,
     hint: 'How fast the push point catches up to the pointer. Lower leaves a longer wake.' },
 
+  // Shape & Morph
+  { key: 'shapeSource', label: 'Shape source', section: 'Shape & Morph', type: 'select', default: 'project',
+    hint: 'Project follows the active project. Anything else holds that shape for every project.',
+    options: [['project', 'Active project'], ['sphere', 'Sphere'], ['torusKnot', 'Torus knot'], ['prism', 'Triangular prism ring'],
+      ['lattice', 'Cube lattice'], ['ring', 'Ring'], ['wave', 'Wave plane'], ['galaxy', 'Spiral galaxy'],
+      ['lorenz', 'Lorenz attractor'], ['aizawa', 'Aizawa attractor'], ['thomas', 'Thomas attractor'],
+      ['text', 'Text'], ['image', 'Image'], ['imageGrid', 'Image grid (tile wall)'], ['model', 'Model (.glb)']] },
+  { key: 'shapeFill', label: 'Fill', section: 'Shape & Morph', type: 'select', default: 'surface',
+    options: [['surface', 'Surface'], ['volume', 'Volume']] },
+  { key: 'torusP', label: 'Torus knot p', section: 'Shape & Morph', type: 'range', min: 1, max: 9, step: 1, default: 2 },
+  { key: 'torusQ', label: 'Torus knot q', section: 'Shape & Morph', type: 'range', min: 1, max: 9, step: 1, default: 3 },
+  { key: 'textString', label: 'Text', section: 'Shape & Morph', type: 'text', default: 'PML', maxLength: 24 },
+  { key: 'textDepth', label: 'Text depth', section: 'Shape & Morph', type: 'range', min: 0, max: 0.5, step: 0.01, default: 0.12,
+    hint: 'Jitter in depth, so text reads as a slab.' },
+  { key: 'imageFile', label: 'Image', section: 'Shape & Morph', type: 'file', accept: 'image/*',
+    hint: 'Uploading switches the shape source to Image. The sample is a generated abstract.' },
+  { key: 'imageWeight', label: 'Brightness weight', section: 'Shape & Morph', type: 'range', min: 0, max: 3, step: 0.05, default: 1,
+    hint: '0 samples evenly; higher crowds particles into bright areas.' },
+  { key: 'imageDepth', label: 'Depth from brightness', section: 'Shape & Morph', type: 'range', min: 0, max: 1, step: 0.01, default: 0.25 },
+  { key: 'modelFile', label: 'Model', section: 'Shape & Morph', type: 'file', accept: '.glb,model/gltf-binary',
+    hint: 'A .glb file. Uploading switches the shape source to Model.' },
+  { key: 'morphDuration', label: 'Duration', section: 'Shape & Morph', type: 'range', min: 0.4, max: 4, step: 0.05, default: 1.6, unit: ' s' },
+  { key: 'morphStagger', label: 'Stagger', section: 'Shape & Morph', type: 'range', min: 0, max: 1, step: 0.01, default: 0.5, unit: ' s' },
+  { key: 'morphScatter', label: 'Scatter', section: 'Shape & Morph', type: 'range', min: 0, max: 5, step: 0.05, default: 2,
+    hint: 'Extra noise mid-morph.' },
+  { key: 'morphBurst', label: 'Burst', section: 'Shape & Morph', type: 'range', min: 0, max: 5, step: 0.05, default: 1,
+    hint: 'Outward push from the center mid-morph.' },
+  { key: 'assignment', label: 'Assignment', section: 'Shape & Morph', type: 'select', default: 'random',
+    options: [['random', 'Random (crossing, dramatic)'], ['sorted', 'Sorted (short paths, clean)']] },
+  { key: 'morphEase', label: 'Easing', section: 'Shape & Morph', type: 'select', default: 'cubic',
+    options: [['cubic', 'In-out cubic'], ['expo', 'In-out expo'], ['back', 'In-out back']] },
+
   // Color
   { key: 'colorMode', label: 'Mode', section: 'Color', type: 'select', default: 'speed',
-    options: [['solid', 'Solid (color A)'], ['speed', 'Gradient by speed'], ['depth', 'Gradient by depth'], ['source', 'Source colors (phase 2)']] },
+    options: [['solid', 'Solid (color A)'], ['speed', 'Gradient by speed'], ['depth', 'Gradient by depth'], ['source', 'Source colors (image or model)']] },
   { key: 'colorA', label: 'Color A', section: 'Color', type: 'color', default: '#cfd8e6' },
   { key: 'colorB', label: 'Color B', section: 'Color', type: 'color', default: '#ffffff' },
   { key: 'intensity', label: 'Intensity', section: 'Color', type: 'range', min: 0.2, max: 4, step: 0.05, default: 1.6,
@@ -71,12 +104,27 @@ export const SCHEMA = [
   { key: 'distance', label: 'Distance', section: 'Camera', type: 'range', min: 2, max: 10, step: 0.05, default: 4.5 },
   { key: 'parallax', label: 'Parallax', section: 'Camera', type: 'range', min: 0, max: 1, step: 0.01, default: 0.25 },
   { key: 'autoOrbit', label: 'Auto-orbit speed', section: 'Camera', type: 'range', min: 0, max: 0.5, step: 0.005, default: 0.05 },
+  { key: 'orbitSway', label: 'Orbit sway', section: 'Camera', type: 'range', min: 0, max: 180, step: 1, default: 35, unit: '°',
+    hint: 'How far auto-orbit swings each side of the front view. 180° orbits all the way round.' },
+  { key: 'cloudX', label: 'Cloud position', section: 'Camera', type: 'range', min: 0.25, max: 0.75, step: 0.01, default: 0.36,
+    hint: 'Where the cloud sits across the open screen, left to right.' },
   { key: 'orbitMode', label: 'Orbit mode (O)', section: 'Camera', type: 'toggle', default: false,
     hint: 'Drag to inspect. Cursor push is off while it’s on.' },
 
   // Background (the full environment layer arrives in phase 3)
   { key: 'bgTop', label: 'Void top', section: 'Background', type: 'color', default: '#05070a' },
   { key: 'bgBottom', label: 'Void bottom', section: 'Background', type: 'color', default: '#0d1117' },
+
+  // HUD
+  { key: 'hudStyle', label: 'HUD style', section: 'HUD', type: 'select', default: 'courtyard',
+    options: [['courtyard', 'Courtyard (white lines on dark)'], ['fog', 'Fog (dark lines on pale)'], ['minimal', 'Minimal (name and readouts)']] },
+  { key: 'hudOpacity', label: 'HUD opacity', section: 'HUD', type: 'range', min: 0, max: 1, step: 0.01, default: 1 },
+  { key: 'fragments', label: 'Floating fragments', section: 'HUD', type: 'select', default: 'few',
+    options: [['off', 'Off'], ['few', 'Few'], ['many', 'Many']] },
+  { key: 'decodeMs', label: 'Decode duration', section: 'HUD', type: 'range', min: 300, max: 1500, step: 10, default: 700, unit: ' ms' },
+  { key: 'decodeGlyphs', label: 'Decode glyphs', section: 'HUD', type: 'select', default: 'code',
+    options: [['code', 'A–Z 0–9 / \\ < > _ |'], ['blocks', 'Blocks only'], ['binary', '0 and 1']] },
+  { key: 'city', label: 'Clock city', section: 'HUD', type: 'text', default: 'ST. PAUL', maxLength: 24 },
 
   // Performance
   { key: 'pixelRatio', label: 'Pixel ratio cap', section: 'Performance', type: 'select', default: '2',

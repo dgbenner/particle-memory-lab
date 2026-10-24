@@ -41,7 +41,7 @@
 .ctl-top output { color: var(--muted); font-variant-numeric: tabular-nums; }
 .ctl-label { display: block; }
 .panel input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); }
-.panel select, .panel textarea {
+.panel select, .panel textarea, .panel input[type="text"] {
   width: 100%; font: inherit; color: var(--fg); background: var(--field);
   border: 1px solid var(--line); border-radius: 3px; padding: 5px 6px;
 }
@@ -70,3 +70,7 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }
+.file-btn { display: inline-block; justify-self: start; }
+.file-name { color: var(--muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60%; }
+.panel input[type="file"]:focus-visible + .file-btn, .file-btn:focus-within { outline: 1px solid var(--accent); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

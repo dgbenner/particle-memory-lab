@@ -11,7 +11,7 @@ export function createCamera(dom) {
   controls.enabled = false;
   controls.enableDamping = true;
 
-  let angle = 0;
+  let angle = 0, phase = 0;
   const par = new THREE.Vector2();
   const right = new THREE.Vector3();
 
@@ -26,7 +26,11 @@ export function createCamera(dom) {
         return;
       }
       controls.enabled = false;
-      angle += dt * (reduced ? 0 : S.autoOrbit);
+      // Auto-orbit sways around the front view so flat shapes (text, images) never turn edge-on.
+      // Peak angular speed is the Auto-orbit speed setting; a sway of 180° is a full orbit.
+      const speed = reduced ? 0 : S.autoOrbit, sway = (S.orbitSway * Math.PI) / 180;
+      if (S.orbitSway >= 180) angle += dt * speed;
+      else { phase += (dt * speed) / Math.max(sway, 0.01); angle = sway * Math.sin(phase); }
       const k = reduced ? 0 : S.parallax;
       const e = Math.min(1, dt * 3);
       par.x += (ndc.x * k - par.x) * e;
@@ -39,5 +43,12 @@ export function createCamera(dom) {
       camera.lookAt(0, 0, 0);
     },
     setAspect(a) { camera.aspect = a; camera.updateProjectionMatrix(); },
+    // Shift the projection so the cloud's center lands at S.cloudX across the open screen (left of the panel).
+    frame(w, h, panelW) {
+      const off = w / 2 - S.cloudX * (w - panelW);
+      const v = camera.view;
+      if (v && v.enabled && v.offsetX === off && v.fullWidth === w && v.fullHeight === h) return;
+      camera.setViewOffset(w, h, off, 0, w, h);
+    },
   };
 }

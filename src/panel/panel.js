@@ -81,12 +81,28 @@ export function createPanel(root, { onAction, disabledOptions = {} }) {
         wrap.innerHTML = `<label class="ctl-color" for="${id}"><span>${s.label}</span><input type="color" id="${id}"></label>`;
       } else if (s.type === 'toggle') {
         wrap.innerHTML = `<label class="ctl-check" for="${id}"><input type="checkbox" id="${id}"> ${s.label}</label>`;
+      } else if (s.type === 'text') {
+        wrap.innerHTML = `<label class="ctl-label" for="${id}">${s.label}</label><input type="text" id="${id}" maxlength="${s.maxLength || 40}" spellcheck="false" autocomplete="off">`;
+      } else if (s.type === 'file') {
+        wrap.innerHTML = `<div class="ctl-top"><span>${s.label}</span><span class="file-name" aria-live="polite"></span></div>
+          <input type="file" id="${id}" accept="${s.accept || ''}" class="sr"><label class="pbtn file-btn" for="${id}">Choose file\u2026</label>`;
       }
       if (s.hint) wrap.insertAdjacentHTML('beforeend', `<p class="hint">${s.hint}</p>`);
       sb.appendChild(wrap);
       const el = wrap.querySelector('#' + id);
+      if (s.type === 'file') {
+        const nameEl = wrap.querySelector('.file-name');
+        el.addEventListener('change', () => {
+          const f = el.files[0];
+          if (!f) return;
+          nameEl.textContent = f.name.length > 22 ? f.name.slice(0, 20) + '\u2026' : f.name;
+          onAction('file', s.key, f, (msg) => (nameEl.textContent = msg));
+          el.value = '';
+        });
+        continue;
+      }
       inputs[s.key] = { el, out: wrap.querySelector('output') };
-      el.addEventListener('input', () => {
+      el.addEventListener(s.type === 'text' ? 'change' : 'input', () => {
         const v = s.type === 'toggle' ? el.checked : s.type === 'range' ? parseFloat(el.value) : el.value;
         set({ [s.key]: v });
       });

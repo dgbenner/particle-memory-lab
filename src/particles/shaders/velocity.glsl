@@ -1,5 +1,5 @@
 // Velocity update. texturePosition, textureVelocity and resolution are provided by GPUComputationRenderer.
-// position.w holds the particle's stable seed.
+// position.w holds the particle's stable seed. noise.glsl and ease.glsl are prepended.
 
 uniform float uTime;
 uniform float uDt;
@@ -15,19 +15,36 @@ uniform vec3 uCursorVel;
 uniform float uCursorRadius;
 uniform float uCursorPush;
 uniform float uCursorDrag;
-uniform sampler2D uTarget;
+uniform sampler2D uFrom;
+uniform sampler2D uTo;
+uniform float uMorphStart;
+uniform float uMorphDur;
+uniform float uStagger;
+uniform float uScatter;
+uniform float uBurst;
+uniform int uEase;
 
 void main() {
   vec2 uv = gl_FragCoord.xy / resolution.xy;
-  vec3 pos = texture2D(texturePosition, uv).xyz;
+  vec4 p4 = texture2D(texturePosition, uv);
+  vec3 pos = p4.xyz;
+  float seed = p4.w;
   vec3 v = texture2D(textureVelocity, uv).xyz;
-  vec3 target = texture2D(uTarget, uv).xyz;
+
+  // Morph: the target slides from the old shape to the new one, staggered per particle.
+  float mp = morphProgress(uTime, uMorphStart, seed, uStagger, uMorphDur);
+  vec3 target = mix(texture2D(uFrom, uv).xyz, texture2D(uTo, uv).xyz, easeMorph(mp, uEase));
+  float dissolve = (mp > 0.0 && mp < 1.0) ? sin(3.14159265 * mp) : 0.0;
 
   // Shape pull
   v += (target - pos) * uPull * uDt;
 
-  // Flow
-  v += curlNoise(pos * uNoiseScale + uTime * uNoiseSpeed) * uNoiseStrength * uDt;
+  // Flow, stronger mid-morph so the shape visibly breaks apart
+  v += curlNoise(pos * uNoiseScale + uTime * uNoiseSpeed) * (uNoiseStrength + dissolve * uScatter) * uDt;
+
+  // Outward burst from the center during the morph
+  float pl = length(pos);
+  if (pl > 1e-4) v += (pos / pl) * dissolve * uBurst * uDt;
 
   // Cursor push, plus a share of the cursor's own motion
   vec3 d = pos - uCursor;

@@ -4,7 +4,7 @@ import { SCHEMA, BY_KEY } from './schema.js';
 
 const KEY = 'particle-memory-lab:v1';
 
-export const defaults = Object.fromEntries(SCHEMA.map((s) => [s.key, s.default]));
+export const defaults = Object.fromEntries(SCHEMA.filter((s) => s.type !== 'file').map((s) => [s.key, s.default]));
 export const S = { ...defaults };
 
 const listeners = new Set();
@@ -26,6 +26,8 @@ function sanitize(key, v) {
     }
     case 'toggle': return typeof v === 'boolean' ? v : undefined;
     case 'color': return /^#[0-9a-f]{6}$/i.test(v) ? v.toLowerCase() : undefined;
+    case 'text': return typeof v === 'string' ? v.slice(0, s.maxLength || 40) : undefined;
+    case 'file': return undefined;
     default: return typeof v === typeof s.default ? v : undefined;
   }
 }
