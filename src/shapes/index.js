@@ -19,10 +19,8 @@ export function setModel(m, id) { model = m; modelId = id; }
 export const hasModel = () => !!model;
 export const currentImageId = () => imageId;
 
-// Which spec to use: the active project's shape, or the panel's Shape source override.
-export function specFor(project) {
-  const src = S.shapeSource;
-  if (src === 'project') return project.shape;
+// The current shape, from the Shape setting (each recipe sets it).
+export function specFor(src = S.shapeSource) {
   if (['lorenz', 'aizawa', 'thomas'].includes(src)) return { type: 'attractor', name: src };
   if (src === 'text') return { type: 'text', text: S.textString };
   if (src === 'image' || src === 'imageGrid' || src === 'model') return { type: src };

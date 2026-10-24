@@ -3,14 +3,14 @@
 // safeMin/safeMax bound Randomize (phase 5). rebuild: true means the simulation must be rebuilt.
 
 export const SECTIONS = [
-  'Style', 'Particles', 'Forces', 'Cursor', 'Shape & Morph', 'Color', 'Glow & Post', 'Camera', 'Background', 'HUD',
+  'Recipes', 'Particles', 'Forces', 'Cursor', 'Shape & Morph', 'Color', 'Glow & Post', 'Camera', 'Background', 'HUD',
   'Performance', 'Settings',
 ];
 
 export const COUNTS = { low: 128, medium: 256, high: 512, ultra: 1024 };
 
 export const SCHEMA = [
-  { key: 'preset', section: 'Style', type: 'hidden', default: 'ember-rings' },
+  { key: 'preset', section: 'Recipes', type: 'hidden', default: 'solar' },
 
   // Particles
   { key: 'count', label: 'Count', section: 'Particles', type: 'select', default: 'ultra', rebuild: true,
@@ -34,6 +34,9 @@ export const SCHEMA = [
   { key: 'maxSpeed', label: 'Max speed', section: 'Forces', type: 'range', min: 0.5, max: 20, step: 0.1, default: 6 },
   { key: 'gravity', label: 'Gravity', section: 'Forces', type: 'range', min: -2, max: 2, step: 0.01, default: 0,
     hint: 'Positive pulls up.' },
+  { key: 'settle', label: 'Settle', section: 'Forces', type: 'range', min: 0, max: 1, step: 0.01, default: 0,
+    hint: 'How much the wiggle calms once particles arrive at a shape, so it comes into focus. 0 never calms.' },
+  { key: 'settleTime', label: 'Settle time', section: 'Forces', type: 'range', min: 0.3, max: 6, step: 0.1, default: 2.5, unit: ' s' },
 
   // Cursor
   { key: 'cursorRadius', label: 'Radius', section: 'Cursor', type: 'range', min: 0, max: 2, step: 0.01, default: 0.6 },
@@ -44,9 +47,9 @@ export const SCHEMA = [
     hint: 'How fast the push point catches up to the pointer. Lower leaves a longer wake.' },
 
   // Shape & Morph
-  { key: 'shapeSource', label: 'Shape source', section: 'Shape & Morph', type: 'select', default: 'project',
-    hint: 'Project follows the active project. Anything else holds that shape for every project.',
-    options: [['project', 'Active project'], ['sphere', 'Sphere'], ['torusKnot', 'Torus knot'], ['prism', 'Triangular prism ring'],
+  { key: 'shapeSource', label: 'Shape', section: 'Shape & Morph', type: 'select', default: 'ring',
+    hint: 'Each recipe picks one; change it here to try another.',
+    options: [['sphere', 'Sphere'], ['torusKnot', 'Torus knot'], ['prism', 'Triangular prism ring'],
       ['lattice', 'Cube lattice'], ['ring', 'Ring'], ['wave', 'Wave plane'], ['galaxy', 'Spiral galaxy'],
       ['lorenz', 'Lorenz attractor'], ['aizawa', 'Aizawa attractor'], ['thomas', 'Thomas attractor'],
       ['text', 'Text'], ['image', 'Image'], ['imageGrid', 'Image grid (tile wall)'], ['model', 'Model (.glb)']] },

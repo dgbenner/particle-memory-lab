@@ -23,6 +23,8 @@ uniform float uStagger;
 uniform float uScatter;
 uniform float uBurst;
 uniform int uEase;
+uniform float uSettle;
+uniform float uSettleTime;
 
 void main() {
   vec2 uv = gl_FragCoord.xy / resolution.xy;
@@ -36,11 +38,15 @@ void main() {
   vec3 target = mix(texture2D(uFrom, uv).xyz, texture2D(uTo, uv).xyz, easeMorph(mp, uEase));
   float dissolve = (mp > 0.0 && mp < 1.0) ? sin(3.14159265 * mp) : 0.0;
 
+  // Settle: once this particle has arrived, its wiggle eases down so the shape comes into focus.
+  float arrived = uTime - uMorphStart - seed * uStagger - uMorphDur;
+  float calm = uSettle * smoothstep(0.0, uSettleTime, arrived);
+
   // Shape pull
   v += (target - pos) * uPull * uDt;
 
   // Flow, stronger mid-morph so the shape visibly breaks apart
-  v += curlNoise(pos * uNoiseScale + uTime * uNoiseSpeed) * (uNoiseStrength + dissolve * uScatter) * uDt;
+  v += curlNoise(pos * uNoiseScale + uTime * uNoiseSpeed) * (uNoiseStrength * (1.0 - calm) + dissolve * uScatter) * uDt;
 
   // Outward burst from the center during the morph
   float pl = length(pos);

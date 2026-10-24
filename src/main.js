@@ -3,8 +3,8 @@
 import './style.css';
 import * as THREE from 'three';
 import { S, set, load, onChange } from './settings/store.js';
-import { COUNTS } from './settings/schema.js';
-import { presetValues } from './settings/presets.js';
+import { COUNTS, BY_KEY } from './settings/schema.js';
+import { presetValues, PRESETS, recipeIndex } from './settings/presets.js';
 import { createRenderer, pixelRatioFor } from './engine/renderer.js';
 import { createCamera } from './engine/camera.js';
 import { createPost } from './engine/post.js';
@@ -15,7 +15,6 @@ import { createMorph, EASES } from './particles/morph.js';
 import { createVoid } from './environment/void.js';
 import { getShape, specFor, setImage, setModel } from './shapes/index.js';
 import { loadModel } from './shapes/model.js';
-import { PROJECTS } from './content/projects.js';
 import { createHud } from './hud/hud.js';
 import { createPanel } from './panel/panel.js';
 
@@ -45,15 +44,20 @@ const cursor = createCursor(cam.camera, canvas);
 const bg = createVoid();
 scene.add(bg.mesh);
 
-let index = 0;
-const project = () => PROJECTS[index];
+// The list on the left: one entry per recipe, with its title-card tag line and full settings.
+const RECIPES = PRESETS.map((p, i) => {
+  const values = presetValues(p.id);
+  const shape = BY_KEY.shapeSource.options.find(([v]) => v === values.shapeSource)?.[1] || '';
+  return { ...p, values, tag: [`RCP_${String(i + 1).padStart(2, '0')}`, p.mood.join(' · '), shape.toUpperCase()] };
+});
+let index = recipeIndex(S.preset);
 
 // Simulation + points + morph, rebuilt when the count changes.
 let sim = null, pts = null, morph = null, buildToken = 0;
 async function build() {
   const token = ++buildToken;
   const size = COUNTS[S.count];
-  const shape = await getShape(specFor(project()), size * size);
+  const shape = await getShape(specFor(), size * size);
   if (token !== buildToken) return;
   if (pts) { scene.remove(pts.points); pts.dispose(); }
   if (sim) sim.dispose();
@@ -66,11 +70,11 @@ async function build() {
   precache();
 }
 
-// Sample every project's shape at this count ahead of time, one per idle slot, so navigation never waits.
+// Sample every recipe's shape at this count ahead of time, one per idle slot, so switching never waits.
 let precacheToken = 0;
 function precache() {
   const token = ++precacheToken, n = sim.count;
-  const queue = PROJECTS.map((p) => p.shape);
+  const queue = RECIPES.map((r) => specFor(r.values.shapeSource));
   const next = () => {
     if (token !== precacheToken || !queue.length) return;
     const spec = queue.shift();
@@ -79,13 +83,13 @@ function precache() {
   setTimeout(next, 800);
 }
 
-// Morph to whatever the current project (or Shape source override) wants.
+// Morph to the current Shape setting.
 let morphToken = 0;
 const fade = { phase: null, t0: 0, shape: null };
 async function morphToCurrent() {
   if (!sim) return;
   const token = ++morphToken;
-  const shape = await getShape(specFor(project()), sim.count);
+  const shape = await getShape(specFor(), sim.count);
   if (token !== morphToken || !sim || shape.points.length !== sim.count * 3) return;
   if (reduced()) {
     // Reduced motion: a 400 ms crossfade instead of travel.
@@ -95,15 +99,19 @@ async function morphToCurrent() {
   }
 }
 
-function go(i) {
-  const n = PROJECTS.length;
+// Switch recipe: apply its settings, decode its name, morph to its shape.
+function go(i, { apply = true } = {}) {
+  const n = RECIPES.length;
   index = ((i % n) + n) % n;
-  const p = project();
-  hud.setProject(index, { instant: reduced() });
-  announceEl.textContent = `${p.name}, project ${index + 1} of ${n}`;
-  descEl.textContent = `Particle visualization of the current project, ${p.name}.`;
-  if (p.style) set(p.style, 'project');
-  morphToCurrent();
+  const r = RECIPES[index];
+  hud.setRecipe(index, { instant: reduced() });
+  announceEl.textContent = apply ? `${r.name}, recipe ${index + 1} of ${n}` : '';
+  descEl.textContent = `Particle visualization of the current recipe, ${r.name}: ${r.description}`;
+  if (apply) {
+    set(r.values, 'recipe');
+    clearTimeout(reshapeTimer);
+    morphToCurrent();
+  }
 }
 
 // Auto quality: if the frame rate stays under 40 for 3 s, step the count down once and say so.
@@ -152,6 +160,7 @@ const panel = createPanel(panelEl, {
   onAction: (a, ...args) => {
     if (a === 'hide') togglePanel(false);
     if (a === 'file') onFile(...args);
+    if (a === 'recipe') go(recipeIndex(args[0]));
   },
   disabledOptions: mobile ? { count: ['ultra'] } : {},
 });
@@ -164,7 +173,7 @@ showBtn.addEventListener('click', () => togglePanel(true));
 
 const hudEl = document.getElementById('hud');
 const hud = createHud(hudEl, {
-  projects: PROJECTS,
+  recipes: RECIPES,
   onSelect: (i) => go(i),
   onStep: (d) => go(index + d),
 });
@@ -172,9 +181,9 @@ const hud = createHud(hudEl, {
 // Settings that change the current shape re-morph to it (sliders settle first).
 const SHAPE_KEYS = ['shapeSource', 'shapeFill', 'torusP', 'torusQ', 'textString', 'textDepth', 'imageWeight', 'imageDepth', 'assignment'];
 let reshapeTimer = 0;
-onChange((keys) => {
+onChange((keys, source) => {
   if (keys.includes('count')) build();
-  else if (keys.some((k) => SHAPE_KEYS.includes(k))) { clearTimeout(reshapeTimer); reshapeTimer = setTimeout(morphToCurrent, 160); }
+  else if (source !== 'recipe' && keys.some((k) => SHAPE_KEYS.includes(k))) { clearTimeout(reshapeTimer); reshapeTimer = setTimeout(morphToCurrent, 160); }
   if (keys.includes('pixelRatio')) resize();
   if (keys.includes('blending') && pts) {
     pts.material.blending = S.blending === 'normal' ? THREE.NormalBlending : THREE.AdditiveBlending;
@@ -262,6 +271,8 @@ function applyUniforms() {
   u.uScatter.value = S.morphScatter;
   u.uBurst.value = S.morphBurst;
   u.uEase.value = EASES[S.morphEase];
+  u.uSettle.value = S.settle;
+  u.uSettleTime.value = S.settleTime;
 
   const m = pts.material.uniforms;
   m.uSize.value = S.size;
@@ -349,7 +360,7 @@ document.addEventListener('visibilitychange', () => {
 });
 
 resize();
-go(0);
+go(index, { apply: false });
 build().then(() => requestAnimationFrame((t) => { last = t; fpsSince = t; frame(t); }));
 
 // Test hook for automated checks; harmless in normal use.

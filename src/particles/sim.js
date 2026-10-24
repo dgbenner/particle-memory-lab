@@ -64,6 +64,7 @@ export function createSim(renderer, size, shape) {
     uFrom: { value: from }, uTo: { value: to },
     uMorphStart: { value: -1e6 }, uMorphDur: { value: 1.6 }, uStagger: { value: 0.5 },
     uScatter: { value: 0 }, uBurst: { value: 0 }, uEase: { value: 0 },
+    uSettle: { value: 0 }, uSettleTime: { value: 2.5 },
   });
   const pu = posVar.material.uniforms;
   pu.uDt = { value: 0 };

@@ -31,6 +31,9 @@
 .hud-nav-row button:hover { color: var(--hud-accent); }
 .hud-index-label { margin-top: 14px; }
 .hud-index { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; }
+.hud-index li { display: flex; align-items: center; gap: 10px; }
+.hud-info { display: inline-flex; color: var(--hud-dim); padding: 2px !important; opacity: 0.75; }
+.hud-info:hover, .hud-info[aria-expanded="true"] { color: var(--hud-fg); opacity: 1; }
 .hud-index button { display: flex; gap: 10px; color: var(--hud-dim); text-align: left; text-transform: uppercase; }
 .hud-index button .num { opacity: 0.7; }
 .hud-index button:hover { color: var(--hud-fg); }
@@ -59,9 +62,27 @@
   margin: 0; font-family: var(--hud-display); font-weight: 200; font-size: var(--name-size, 48px);
   line-height: 1.04; letter-spacing: 0.04em; white-space: pre-wrap;
 }
-.hud-link { text-decoration: none; padding: 2px 0; border-bottom: 1px solid var(--hud-line); }
-.hud-link:hover { border-bottom-color: var(--hud-fg); }
-.hud-link[aria-disabled="true"] { color: var(--hud-dim); border-bottom-style: dashed; cursor: default; pointer-events: none; }
+.hud-card-info { display: inline-flex; align-items: center; gap: 8px; padding: 3px 0 !important; border-bottom: 1px solid var(--hud-line) !important; }
+.hud-card-info:hover, .hud-card-info[aria-expanded="true"] { border-bottom-color: var(--hud-fg) !important; }
+
+/* Recipe sheet: what's in a recipe */
+.hud-recipe {
+  position: fixed; width: 280px; max-width: calc(var(--open-w) - 32px); gap: 10px; z-index: 6;
+  background: rgba(6, 8, 11, 0.93); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.hud[data-style="fog"] .hud-recipe { background: rgba(240, 244, 247, 0.94); }
+.hud-recipe-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.hud-close { font-size: 16px !important; line-height: 1; padding: 0 2px !important; color: var(--hud-dim) !important; }
+.hud-close:hover { color: var(--hud-fg) !important; }
+.hud-recipe-desc { color: var(--hud-dim); font-size: 11px; }
+.hud-recipe dl { margin: 0; display: grid; gap: 4px; }
+.hud-recipe dl div { display: grid; grid-template-columns: 74px 1fr; gap: 10px; }
+.hud-recipe dt { color: var(--hud-dim); }
+.hud-recipe dd { margin: 0; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.hud-recipe .sw { display: inline-block; width: 11px; height: 11px; border: 1px solid var(--hud-line); }
+.hud-use { justify-self: start; padding: 4px 9px !important; border: 1px solid var(--hud-line) !important; }
+.hud-use:hover { border-color: var(--hud-fg) !important; }
+.hud-use[hidden] { display: none; }
 
 .hud-leader { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .hud-leader polyline { stroke: var(--hud-line); stroke-width: 1; }
@@ -85,7 +106,7 @@
 .frag-text { display: grid; font-size: 8px; line-height: 1.35; letter-spacing: 0.1em; color: var(--hud-dim); white-space: pre; }
 
 /* Minimal: only the name and the readouts. Keyboard navigation still works. */
-.hud[data-style="minimal"] :is(.hud-nav, .hud-pop, .hud-tag, .hud-link, .hud-leader, .hud-chev, .hud-progress, .hud-frags) { display: none; }
+.hud[data-style="minimal"] :is(.hud-nav, .hud-pop, .hud-tag, .hud-card-info, .hud-leader, .hud-chev, .hud-progress, .hud-frags) { display: none; }
 
 .hud .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 

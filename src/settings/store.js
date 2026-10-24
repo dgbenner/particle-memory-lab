@@ -2,6 +2,9 @@
 
 import { SCHEMA, BY_KEY } from './schema.js';
 
+// Recipe ids that were renamed (kept in step with ALIASES in presets.js).
+const RENAMED = { 'ember-rings': 'solar', painting: 'paint', swarm: 'signal' };
+
 const KEY = 'particle-memory-lab:v1';
 
 export const defaults = Object.fromEntries(SCHEMA.filter((s) => s.type !== 'file').map((s) => [s.key, s.default]));
@@ -50,6 +53,7 @@ export function load() {
   try {
     const o = JSON.parse(localStorage.getItem(KEY) || 'null');
     if (!o || typeof o !== 'object') return false;
+    if (RENAMED[o.preset]) o.preset = RENAMED[o.preset];
     for (const k of Object.keys(o)) {
       const v = sanitize(k, o[k]);
       if (v !== undefined) S[k] = v;

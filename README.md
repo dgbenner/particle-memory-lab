@@ -15,7 +15,7 @@ The full build plan is in [SPEC.md](SPEC.md).
 - Morph: staggered per particle, with a dissolve mid-way (extra noise plus an outward burst), three easings, and random or sorted point assignment. A morph started mid-morph begins from the current blended targets.
 - HUD: nav, project index, project card with a decode transition, leader line from the cloud, chevrons, cursor and clock readouts, progress tick, floating fragments, and three HUD styles.
 - Navigation: arrow keys, chevrons, index list, mouse wheel (one project per gesture) and swipe.
-- Presets: Ember rings (the default), Night courtyard, Ember, Swarm, Data painting, Tile wall.
+- Recipes: six complete looks that replace the spec's project list (see Recipes below).
 
 Phases 3–5 (environments and atmosphere, Gaussian splats, capture) are not started.
 
@@ -32,25 +32,29 @@ npm run dev
 
 | Key | Action |
 |---|---|
-| ← / → | Previous or next project |
+| ← / → | Previous or next recipe |
 | H | Hide or show the control panel |
 | U | Hide or show the HUD |
-| Esc | Close the About or Contact panel |
+| Esc | Close the About, Contact or recipe sheet |
 | O | Toggle orbit mode (drag to inspect; cursor push is off) |
 | Space | Pause or resume the simulation |
 
-## Adding projects
+## Recipes
 
-Edit `src/content/projects.js`. Each entry has a name, a three-part tag, a URL (`#` shows the link as unavailable) and a shape:
+The list on the left and the Recipes buttons in the panel are the same six recipes. Each is a complete look: colors, mood, motion and a shape. Picking one (click, arrow keys, wheel, chevrons or swipe) applies it, decodes its name into the title and morphs the particles into its shape. The ⓘ beside each one, or Recipe under the title, opens a sheet listing what's in it.
 
-```js
-shape: { type: 'primitive', name: 'torusKnot' }   // sphere, torusKnot, prism, lattice, ring, wave, galaxy
-shape: { type: 'attractor', name: 'aizawa' }      // lorenz, aizawa, thomas
-shape: { type: 'text', text: 'ATL' }
-shape: { type: 'model', src: 'env/thing.glb' }    // a file in public/
-```
+| Recipe | Mood | Shape |
+|---|---|---|
+| Solar (default) | warm, restless | Ring |
+| Blue Ice | cold, still | Cube lattice |
+| Night Courtyard | quiet, nocturnal | Torus knot |
+| Aurora | dreamy, slow | Spiral galaxy |
+| Signal | nervous, alert | Lorenz attractor |
+| Paint | fluid, warm | Image |
 
-`style` can hold settings overrides applied when that project becomes active.
+Recipes live in `src/settings/presets.js`. Each lists only the settings it changes; everything else takes the schema default. Add `mood` (two words) and a `description`; the tag line and sheet are generated from them.
+
+**Settle** (Forces) calms the wiggle once particles arrive at a shape, so it comes into focus. Blue Ice, Night Courtyard and Aurora use it.
 
 ## Notes beyond the spec
 
@@ -58,7 +62,7 @@ shape: { type: 'model', src: 'env/thing.glb' }    // a file in public/
 - **Min size, Max size, Follow, Speed for color B, Depth range, Exposure and Distance** are exposed so that every number the shaders use comes from a setting.
 - With reduced motion, auto-orbit, parallax and sparkle are off and noise speed drops by 75%. The saved settings themselves aren't changed.
 - **Auto-orbit sways** around the front view (Orbit sway, default 35° each side) instead of circling, so flat shapes like text and images never turn edge-on. Set Orbit sway to 180° for a full orbit.
-- **Data painting and Tile wall** arrived in phase 2 with the image shape. Presets don't change the particle count, so the spec's "High count" for Data painting is left to the Count control.
+- **Recipes replace projects.** This lab is a single piece for an ai.html page, so the spec's project list became six recipes. The spec's Ember, Swarm, Data painting and Tile wall presets were folded in or dropped: Swarm became Signal, Data painting became Paint. Recipes don't change the particle count.
 - **Cloud position** (Camera) shifts the view so the cloud sits left of the project card rather than dead center.
 - **Burst** (Shape & Morph) sets the outward push during the dissolve, so the spec's "small outward impulse" comes from a setting rather than a fixed number.
 - With reduced motion, morphs are a 400 ms crossfade and the name swaps instantly.

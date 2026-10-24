@@ -2,11 +2,11 @@
 
 import './panel.css';
 import { SCHEMA, SECTIONS, BY_KEY } from '../settings/schema.js';
-import { PRESETS, presetValues } from '../settings/presets.js';
+import { PRESETS } from '../settings/presets.js';
 import { S, set, onChange, toJSON, fromJSON } from '../settings/store.js';
 
 const OPEN_KEY = 'particle-memory-lab:sections';
-const OPEN_DEFAULT = ['Style', 'Particles', 'Forces'];
+const OPEN_DEFAULT = ['Recipes', 'Particles', 'Forces'];
 
 const fmt = (s, v) => {
   if (s.type !== 'range') return '';
@@ -45,19 +45,19 @@ export function createPanel(root, { onAction, disabledOptions = {} }) {
     const sb = d.querySelector('.sec-body');
     body.appendChild(d);
 
-    if (sec === 'Style') {
-      sb.innerHTML = `<div class="presets" role="group" aria-label="Style presets">${PRESETS.map((p) =>
+    if (sec === 'Recipes') {
+      sb.innerHTML = `<div class="presets" role="group" aria-label="Recipes">${PRESETS.map((p) =>
         `<button type="button" class="pbtn" data-preset="${p.id}" aria-pressed="false">${p.name}</button>`).join('')}</div>
         <p class="hint" id="preset-desc"></p>`;
       sb.querySelectorAll('[data-preset]').forEach((b) =>
-        b.addEventListener('click', () => set(presetValues(b.dataset.preset), 'preset')));
+        b.addEventListener('click', () => onAction('recipe', b.dataset.preset)));
       continue;
     }
     if (sec === 'Settings') {
       sb.innerHTML = `
         <div class="row-btns">
           <button type="button" class="pbtn" data-act="copy">Copy settings</button>
-          <button type="button" class="pbtn" data-act="reset">Reset to preset</button>
+          <button type="button" class="pbtn" data-act="reset">Reset to recipe</button>
         </div>
         <label class="ctl-label" for="paste-box">Paste settings</label>
         <textarea id="paste-box" rows="3" spellcheck="false" placeholder="Paste copied JSON here"></textarea>
@@ -144,8 +144,8 @@ export function createPanel(root, { onAction, disabledOptions = {} }) {
     catch (e) { flash('That isn’t valid settings JSON.'); }
   });
   root.querySelector('[data-act=reset]').addEventListener('click', () => {
-    set(presetValues(S.preset), 'preset');
-    flash('Reset to ' + (PRESETS.find((p) => p.id === S.preset)?.name || 'preset'));
+    onAction('recipe', S.preset);
+    flash('Reset to ' + (PRESETS.find((p) => p.id === S.preset)?.name || 'recipe'));
   });
 
   // Hide / float
