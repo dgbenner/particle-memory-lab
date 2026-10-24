@@ -39,12 +39,12 @@ export const SCHEMA = [
   { key: 'settleTime', label: 'Settle time', section: 'Forces', type: 'range', min: 0.3, max: 6, step: 0.1, default: 2.5, unit: ' s' },
 
   // Cursor
-  // Cursor defaults are Sunburn's, shared by every recipe.
-  { key: 'cursorRadius', label: 'Radius', section: 'Cursor', type: 'range', min: 0, max: 2, step: 0.01, default: 1.58 },
-  { key: 'cursorPush', label: 'Push', section: 'Cursor', type: 'range', min: 0, max: 50, step: 0.5, default: 14 },
-  { key: 'cursorDrag', label: 'Drag along', section: 'Cursor', type: 'range', min: 0, max: 1, step: 0.01, default: 0.3,
+  // Cursor defaults are Dan's, shared by every recipe.
+  { key: 'cursorRadius', label: 'Radius', section: 'Cursor', type: 'range', min: 0, max: 2, step: 0.01, default: 1.28 },
+  { key: 'cursorPush', label: 'Push', section: 'Cursor', type: 'range', min: 0, max: 50, step: 0.5, default: 43.5 },
+  { key: 'cursorDrag', label: 'Drag along', section: 'Cursor', type: 'range', min: 0, max: 1, step: 0.01, default: 0.78,
     hint: 'How much nearby particles pick up the cursor’s own motion.' },
-  { key: 'cursorEase', label: 'Follow', section: 'Cursor', type: 'range', min: 1, max: 30, step: 0.5, default: 23.5,
+  { key: 'cursorEase', label: 'Follow', section: 'Cursor', type: 'range', min: 1, max: 30, step: 0.5, default: 15,
     hint: 'How fast the push point catches up to the pointer. Lower leaves a longer wake.' },
 
   // Shape & Morph
