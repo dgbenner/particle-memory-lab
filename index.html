@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Particle Memory Lab</title>
+<meta name="description" content="GPU particle effects that assemble into shapes, dissolve and reassemble.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+<p class="sr" id="gl-desc">Particle visualization: a glowing sphere of particles that drifts and parts around the pointer.</p>
+
+<div class="mark" aria-hidden="true"><b>Particle Memory Lab</b> · Phase 1 · Core engine</div>
+<div class="notice" id="notice" role="status" hidden><span></span><button type="button">Dismiss</button></div>
+<button type="button" class="panel-show" id="panel-show" hidden>Controls (H)</button>
+<aside id="panel"></aside>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
