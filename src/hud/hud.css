@@ -21,15 +21,11 @@
 .hud button { background: none; border: 0; padding: 0; cursor: pointer; }
 .hud :focus-visible { outline: 1px solid var(--hud-accent); outline-offset: 3px; }
 .hud .dim { color: var(--hud-dim); }
-.hud-bracket { color: var(--hud-dim); }
+.hud-bracket, .hud-ascii { color: var(--hud-dim); white-space: pre; }
 
 /* Top-left nav and index */
 .hud-nav { position: absolute; left: 28px; top: 26px; display: grid; gap: 10px; justify-items: start; }
-.hud-nav-row { display: flex; gap: 18px; }
-.hud-nav-row button { padding: 2px 0; border-bottom: 1px solid transparent; }
-.hud-nav-row button[aria-pressed="true"], .hud-nav-row button[aria-expanded="true"] { border-bottom-color: var(--hud-fg); }
-.hud-nav-row button:hover { color: var(--hud-accent); }
-.hud-index-label { margin-top: 14px; }
+.hud-index-label { margin-bottom: 2px; }
 .hud-index { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; }
 .hud-index li { display: flex; align-items: center; gap: 10px; }
 .hud-info { display: inline-flex; color: var(--hud-dim); padding: 2px !important; opacity: 0.75; }

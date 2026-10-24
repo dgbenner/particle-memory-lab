@@ -13,7 +13,7 @@ The full build plan is in [SPEC.md](SPEC.md).
 **Phase 2, shapes, morphing and HUD: built.**
 - Shapes: sphere, torus knot, triangular prism ring, cube lattice, ring, wave plane, spiral galaxy; Lorenz, Aizawa and Thomas attractors; text; image (uploaded, or a generated sample); image grid; `.glb` model. Primitives and attractors are sampled in a Web Worker.
 - Morph: staggered per particle, with a dissolve mid-way (extra noise plus an outward burst), three easings, and random or sorted point assignment. A morph started mid-morph begins from the current blended targets.
-- HUD: nav, project index, project card with a decode transition, leader line from the cloud, chevrons, cursor and clock readouts, progress tick, floating fragments, and three HUD styles.
+- HUD: recipe list, title card with a decode transition, leader line from the cloud, chevrons, cursor and clock readouts, progress tick, floating fragments, and three HUD styles.
 - Navigation: arrow keys, chevrons, index list, mouse wheel (one project per gesture) and swipe.
 - Recipes: six complete looks that replace the spec's project list (see Recipes below).
 
@@ -35,7 +35,7 @@ npm run dev
 | ← / → | Previous or next recipe |
 | H | Hide or show the control panel |
 | U | Hide or show the HUD |
-| Esc | Close the About, Contact or recipe sheet |
+| Esc | Close the recipe sheet |
 | O | Toggle orbit mode (drag to inspect; cursor push is off) |
 | Space | Pause or resume the simulation |
 

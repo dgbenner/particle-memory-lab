@@ -40,14 +40,8 @@ function describe(r) {
 export function createHud(root, { recipes, onSelect, onStep }) {
   root.className = 'hud';
   root.innerHTML = `
-    <nav class="hud-nav" aria-label="Site">
-      <span class="hud-bracket" aria-hidden="true">[ NAV ]</span>
-      <div class="hud-nav-row">
-        <button type="button" data-nav="work" aria-pressed="true">WORK</button>
-        <button type="button" data-nav="about" aria-expanded="false" aria-controls="hud-about">ABOUT</button>
-        <button type="button" data-nav="contact" aria-expanded="false" aria-controls="hud-contact">CONTACT</button>
-      </div>
-      <span class="hud-bracket hud-index-label" aria-hidden="true">[ RECIPES ]</span>
+    <nav class="hud-nav" aria-label="Recipes">
+      <span class="hud-ascii hud-index-label" aria-hidden="true">/// RECIPES //////////</span>
       <ol class="hud-index" aria-label="Recipes">
         ${recipes.map((r, i) => `<li>
           <button type="button" class="hud-pick" data-i="${i}"><span class="num">${pad(i + 1)}</span>${r.name}</button>
@@ -55,19 +49,9 @@ export function createHud(root, { recipes, onSelect, onStep }) {
         </li>`).join('')}
       </ol>
     </nav>
-    <section class="hud-pop" id="hud-about" hidden aria-label="About">
-      <span class="hud-bracket" aria-hidden="true">[ ABOUT ]</span>
-      <p>Placeholder. A short paragraph about the studio and the work goes here.</p>
-      <p class="dim">Particle Memory Lab · experiments in assembling, dissolving and reassembling form.</p>
-    </section>
-    <section class="hud-pop" id="hud-contact" hidden aria-label="Contact">
-      <span class="hud-bracket" aria-hidden="true">[ CONTACT ]</span>
-      <p>Placeholder. Contact details go here.</p>
-      <p class="dim">hello@example.com</p>
-    </section>
     <section class="hud-pop hud-recipe" id="hud-recipe" hidden aria-labelledby="recipe-title">
       <div class="hud-recipe-head">
-        <span class="hud-bracket" id="recipe-title"></span>
+        <span class="hud-ascii" id="recipe-title"></span>
         <button type="button" class="hud-close" aria-label="Close recipe">×</button>
       </div>
       <p class="hud-recipe-desc"></p>
@@ -99,28 +83,11 @@ export function createHud(root, { recipes, onSelect, onStep }) {
   const cardInfo = $('.hud-card-info');
   const sheet = $('#hud-recipe');
 
-  // Nav: WORK closes the panels; ABOUT / CONTACT toggle theirs.
-  const pops = { about: $('#hud-about'), contact: $('#hud-contact') };
-  const navBtns = [...root.querySelectorAll('[data-nav]')];
-  function openPop(which) {
-    for (const [k, el] of Object.entries(pops)) el.hidden = k !== which;
-    navBtns.forEach((b) => {
-      const k = b.dataset.nav;
-      if (k === 'work') b.setAttribute('aria-pressed', String(!which));
-      else b.setAttribute('aria-expanded', String(k === which));
-    });
-    if (which) closeSheet();
-  }
-  navBtns.forEach((b) => b.addEventListener('click', () => {
-    const k = b.dataset.nav;
-    openPop(k === 'work' || !pops[k].hidden ? null : k);
-  }));
-
   // Recipe sheet. `sheetFor` is a recipe index, or 'card' to follow the active recipe.
   let sheetFor = null, current = 0, opener = null;
   function fillSheet(i) {
     const r = recipes[i];
-    $('#recipe-title').textContent = `[ ${pad(i + 1)} · ${r.name.toUpperCase()} ]`;
+    $('#recipe-title').textContent = `/// ${pad(i + 1)} · ${r.name.toUpperCase()}`;
     $('.hud-recipe-desc').textContent = r.description;
     $('.hud-recipe-body').innerHTML = describe(r);
     $('.hud-use').hidden = i === current;
@@ -138,7 +105,6 @@ export function createHud(root, { recipes, onSelect, onStep }) {
     }
   }
   function openSheet(target, btn) {
-    openPop(null);
     sheetFor = target;
     opener = btn;
     fillSheet(target === 'card' ? current : target);
@@ -185,7 +151,7 @@ export function createHud(root, { recipes, onSelect, onStep }) {
   let lastSec = -1;
   return {
     root,
-    closePops() { openPop(null); closeSheet({ refocus: true }); },
+    closePops() { closeSheet({ refocus: true }); },
     setRecipe(i, { instant = false } = {}) {
       current = i;
       const r = recipes[i];
