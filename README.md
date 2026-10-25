@@ -41,7 +41,7 @@ npm run dev
 
 ## Recipes
 
-The list on the left and the Recipes buttons in the panel are the same six recipes. Each is a complete look: colors, mood, motion and a shape. Picking one (click, arrow keys, wheel, chevrons or swipe) applies it, decodes its name into the title and morphs the particles into its shape. The ⓘ beside each one, or Recipe under the title, opens a sheet listing what's in it.
+The list on the left and the Recipes buttons in the panel are the same seven recipes. Each is a complete look: colors, mood, motion and a shape. Picking one (click, arrow keys, wheel, chevrons or swipe) applies it, decodes its name into the title and morphs the particles into its shape. The ⓘ beside each one, or Recipe under the title, opens a sheet listing what's in it.
 
 | Recipe | Mood | Shape |
 |---|---|---|
@@ -51,6 +51,7 @@ The list on the left and the Recipes buttons in the panel are the same six recip
 | Aurora | dreamy, slow | Spiral galaxy |
 | Signal | nervous, alert | Lorenz attractor |
 | Paint | fluid, warm | Image |
+| Blue Smoke | calm, drifting | Lorenz attractor |
 
 Recipes live in `src/settings/presets.js`. Each lists only the settings it changes; everything else takes the schema default. Add `mood` (two words) and a `description`; the tag line and sheet are generated from them.
 

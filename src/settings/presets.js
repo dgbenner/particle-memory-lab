@@ -92,6 +92,21 @@ export const PRESETS = [
       bgTop: '#050608', bgBottom: '#0a0b0e',
     },
   },
+  {
+    id: 'smoke',
+    name: 'Blue Smoke',
+    mood: ['CALM', 'DRIFTING'],
+    description: 'Thin ribbons of glowing blue smoke folding over each other in the dark, like incense in cold light.',
+    values: {
+      shapeSource: 'lorenz',
+      sprite: 'soft', size: 1.1, sizeVar: 0.6, sparkle: 0,
+      pull: 3, noiseStrength: 0.9, noiseScale: 0.8, noiseSpeed: 0.18, damping: 0.97, maxSpeed: 4, gravity: 0.12, settle: 0,
+      colorMode: 'speed', colorA: '#1d4dff', colorB: '#a8ecff', intensity: 1.9, opacity: 0.025, speedRange: 0.8,
+      blending: 'additive',
+      bloomStrength: 0.75, bloomRadius: 0.8, bloomThreshold: 0.08, trails: 0.94, grain: 0.03, vignette: 0.55, aberration: 0,
+      bgTop: '#010409', bgBottom: '#020b16', autoOrbit: 0.02,
+    },
+  },
 ];
 
 export const recipeIndex = (id) => Math.max(0, PRESETS.findIndex((p) => p.id === canonical(id)));
